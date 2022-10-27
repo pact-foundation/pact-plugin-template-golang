@@ -1,0 +1,11 @@
+{
+  "pluginInterfaceVersion": 1,
+  "name": "matt",
+  "version": "0.0.1",
+  "executableType": "exec",
+  "minimumRequiredVersion": null,
+  "entryPoint": "matt",
+  "entryPoints": {},
+  "dependencies": null,
+  "pluginConfig": {}
+}
