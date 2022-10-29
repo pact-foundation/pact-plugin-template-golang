@@ -12,14 +12,20 @@ builds:
       - linux
       - windows
       - darwin
+release: 
+  extra_files:
+    - glob: ./pact-plugin.json
 archives:
   - replacements:
       darwin: osx
       linux: linux
       windows: windows
       amd64: x86_64
+      arm64: aarch64
     name_template: "{{ .ProjectName }}-{{ .Os }}-{{ .Arch }}"
-    # name_template: "{{ incpatch .Version }}-arch"
+    format: gz
+    files:
+      - none*
 checksum:
   name_template: 'checksums.txt'
 snapshot:
@@ -30,6 +36,8 @@ changelog:
     exclude:
       - '^docs:'
       - '^test:'
+      - '^wip:'
+      - '^chore:'
 
 # modelines, feel free to remove those if you don't want/use them:
 # yaml-language-server: $schema=https://goreleaser.com/static/schema.json

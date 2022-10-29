@@ -4,6 +4,12 @@ This is an example [plugin](https://github.com/pact-foundation/pact-plugins) for
 
 It implements a custom [Protocol](https://github.com/pact-foundation/pact-plugins/blob/main/docs/protocol-plugin-design.md) and [Content Matcher](https://github.com/pact-foundation/pact-plugins/blob/main/docs/content-matcher-design.md) for a fictional protocol - the MATT protocol.
 
+## Install
+
+```
+pact-plugin-cli -y install https://github.com/mefellows/pact-plugin-matt/releases/tag/v0.0.1
+```
+
 ## Use Case
 
 The MATT protocol is a simple text-based protocol, designed for efficient communication of messages to a Matt.
