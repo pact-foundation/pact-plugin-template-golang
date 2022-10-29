@@ -6,11 +6,23 @@ It implements a custom [Protocol](https://github.com/pact-foundation/pact-plugin
 
 ## Use Case
 
-The Matt protocol is a simple text-based protocol, designed for efficient communication of messages to a Matt.
+The MATT protocol is a simple text-based protocol, designed for efficient communication of messages to a Matt.
 
-MATT messages may contain any valid UTF-8 character, where the start and end of the communication must contain the word "MATT".
+MATT messages are composed of basic text values, where the start and end of the communication must contain the word "MATT".
 
 i.e.  `MATT<message>MATT`
+
+in BNF it would be something like this:
+
+```
+<message>   ::= <delimeter> <word> <delimeter>
+<delimeter> ::= "MATT"
+<word>      ::= <character> | <word> <character>
+<character> ::= <letter> | <number> | <symbol>
+<letter>    ::= "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z" | "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z"
+<number>    ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+<symbol>    ::=  "|" | " " | "!" | "#" | "$" | "%" | "&" | "(" | ")" | "*" | "+" | "," | "-" | "." | "/" | ":" | ";" | ">" | "=" | "<" | "?" | "@" | "[" | "\" | "]" | "^" | "_" | "`" | "{" | "}" | "~"
+```
 
 When sent over TCP, messages are terminated with the newline delimeter `\n`.
 
