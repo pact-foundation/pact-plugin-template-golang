@@ -7,7 +7,7 @@ It implements a custom [Protocol](https://github.com/pact-foundation/pact-plugin
 ## Install
 
 ```
-pact-plugin-cli -y install https://github.com/mefellows/pact-plugin-matt/releases/tag/v0.0.1
+pact-plugin-cli -y install https://github.com/mefellows/pact-matt-plugin/releases/tag/v0.0.1
 ```
 
 ## Use Case

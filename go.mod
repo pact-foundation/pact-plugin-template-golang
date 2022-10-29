@@ -1,4 +1,4 @@
-module github.com/mefellows/pact-plugin-matt
+module github.com/mefellows/pact-matt-plugin
 
 go 1.18
 
