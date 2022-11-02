@@ -36,6 +36,7 @@ type configurationResponse struct {
 
 func startPluginServer(details serverDetails) {
 	log.Println("starting server on port", details.Port)
+
 	lis, err := net.Listen("tcp", fmt.Sprintf("127.0.0.1:%d", details.Port))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
@@ -44,7 +45,6 @@ func startPluginServer(details serverDetails) {
 
 	var opts []grpc.ServerOption
 
-	// TODO: options as flags?
 	grpcServer := grpc.NewServer(opts...)
 	plugin.RegisterPactPluginServer(grpcServer, newServer())
 	grpcServer.Serve(lis)
@@ -310,10 +310,10 @@ func (m *mattPluginServer) VerifyInteraction(ctx context.Context, req *plugin.Ve
 						{
 							Result: &plugin.VerificationResultItem_Mismatch{
 								Mismatch: &plugin.ContentMismatch{
-									Expected: wrapperspb.Bytes([]byte(requestMessage)),
+									Expected: wrapperspb.Bytes([]byte(responseMessage)),
 									Actual:   wrapperspb.Bytes([]byte(actual)),
 									Path:     "$",
-									Mismatch: fmt.Sprintf("Expected '%s' but got '%s'", requestMessage, actual),
+									Mismatch: fmt.Sprintf("Expected '%s' but got '%s'", responseMessage, actual),
 								},
 							},
 						},
