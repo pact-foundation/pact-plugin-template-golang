@@ -10,6 +10,25 @@ It implements a custom [Protocol](https://github.com/pact-foundation/pact-plugin
 pact-plugin-cli -y install https://github.com/mefellows/pact-matt-plugin/releases/tag/v0.0.1
 ```
 
+## Writing tests
+
+### Synchronous Messages
+
+Set the request/response all in one go:
+
+```
+mattMessage := `{"request": {"body": "hellotcp"}, "response":{"body":"tcpworld"}}`
+```
+
+### HTTP
+
+Separate out the body on the request/response part of the interaction:
+
+```
+	mattRequest := `{"request": {"body": "hello"}}`
+	mattResponse := `{"response":{"body":"world"}}`
+```
+
 ## Use Case
 
 The MATT protocol is a simple text-based protocol, designed for efficient communication of messages to a Matt.
