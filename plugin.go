@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log"
 	"net"
-	"os"
 
 	"github.com/google/uuid"
 	plugin "github.com/mefellows/pact-matt-plugin/io_pact_plugin"
@@ -44,9 +43,6 @@ func startPluginServer(details serverDetails) {
 	fmt.Printf(`{"port": %d, "serverKey": "%s"}%s`, details.Port, details.ServerKey, "\n")
 
 	var opts []grpc.ServerOption
-
-	os.Setenv("GRPC_GO_LOG_VERBOSITY_LEVEL", "99")
-	os.Setenv("GRPC_GO_LOG_SEVERITY_LEVEL", "info")
 
 	// TODO: options as flags?
 	grpcServer := grpc.NewServer(opts...)
