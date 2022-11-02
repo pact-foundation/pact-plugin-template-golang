@@ -254,7 +254,8 @@ func (m *mattPluginServer) GetMockServerResults(ctx context.Context, req *plugin
 
 }
 
-var expectedMessage = ""
+var requestMessage = ""
+var responseMessage = ""
 
 // Prepare an interaction for verification. This should return any data required to construct any request
 // so that it can be amended before the verification is run
@@ -270,14 +271,15 @@ func (m *mattPluginServer) PrepareInteractionForVerification(ctx context.Context
 		log.Println("ERROR extracting payload for verification:", err)
 	}
 
-	expectedMessage = parseMattMessage(p.Interactions[0].Response[0].Contents.Content)
+	requestMessage = parseMattMessage(p.Interactions[0].Request.Contents.Content)
+	responseMessage = parseMattMessage(p.Interactions[0].Response[0].Contents.Content)
 
 	return &plugin.VerificationPreparationResponse{
 		Response: &plugin.VerificationPreparationResponse_InteractionData{
 			InteractionData: &plugin.InteractionData{
 				Body: &plugin.Body{
 					ContentType: "application/matt",
-					Content:     wrapperspb.Bytes([]byte(generateMattMessage(expectedMessage))), // <- TODO: this needs to come from the pact struct
+					Content:     wrapperspb.Bytes([]byte(generateMattMessage(requestMessage))), // <- TODO: this needs to come from the pact struct
 				},
 			},
 		},
@@ -294,11 +296,11 @@ func (m *mattPluginServer) VerifyInteraction(ctx context.Context, req *plugin.Ve
 	port := req.Config.AsMap()["port"].(float64)
 
 	log.Println("Calling TCP service at host", host, "and port", port)
-	actual, err := callMattServiceTCP(host, int(port), expectedMessage)
-	log.Println("Received:", actual, "wanted:", expectedMessage, "err:", err)
+	actual, err := callMattServiceTCP(host, int(port), requestMessage)
+	log.Println("Received:", actual, "wanted:", responseMessage, "err:", err)
 
 	// Report on the results
-	if actual != expectedMessage {
+	if actual != responseMessage {
 		return &plugin.VerifyInteractionResponse{
 			Response: &plugin.VerifyInteractionResponse_Result{
 				Result: &plugin.VerificationResult{
@@ -308,10 +310,10 @@ func (m *mattPluginServer) VerifyInteraction(ctx context.Context, req *plugin.Ve
 						{
 							Result: &plugin.VerificationResultItem_Mismatch{
 								Mismatch: &plugin.ContentMismatch{
-									Expected: wrapperspb.Bytes([]byte(expectedMessage)),
+									Expected: wrapperspb.Bytes([]byte(requestMessage)),
 									Actual:   wrapperspb.Bytes([]byte(actual)),
 									Path:     "$",
-									Mismatch: fmt.Sprintf("Expected '%s' but got '%s'", expectedMessage, actual),
+									Mismatch: fmt.Sprintf("Expected '%s' but got '%s'", requestMessage, actual),
 								},
 							},
 						},
