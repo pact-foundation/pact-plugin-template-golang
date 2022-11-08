@@ -265,14 +265,44 @@ func (m *mattPluginServer) PrepareInteractionForVerification(ctx context.Context
 	// 2022/10/27 23:06:42 Received PrepareInteractionForVerification request: pact:"{\"consumer\":{\"name\":\"matttcpconsumer\"},\"interactions\":[{\"description\":\"Matt message\",\"key\":\"f27f2917655cb542\",\"pending\":false,\"request\":{\"contents\":{\"content\":\"MATThellotcpMATT\",\"contentType\":\"application/matt\",\"contentTypeHint\":\"DEFAULT\",\"encoded\":false}},\"response\":[{\"contents\":{\"content\":\"MATTtcpworldMATT\",\"contentType\":\"application/matt\",\"contentTypeHint\":\"DEFAULT\",\"encoded\":false}}],\"transport\":\"matt\",\"type\":\"Synchronous/Messages\"}],\"metadata\":{\"pactRust\":{\"ffi\":\"0.3.13\",\"mockserver\":\"0.9.4\",\"models\":\"0.4.5\"},\"pactSpecification\":{\"version\":\"4.0\"},\"plugins\":[{\"configuration\":{},\"name\":\"matt\",\"version\":\"0.0.1\"}]},\"provider\":{\"name\":\"matttcpprovider\"}}" interactionKey:"f27f2917655cb542" config:{fields:{key:"host" value:{string_value:"localhost"}} fields:{key:"port" value:{number_value:8444}}}
 	log.Println("Received PrepareInteractionForVerification request:", req)
 
-	var p pact
+	var p pactv4
 	err := json.Unmarshal([]byte(req.Pact), &p)
 	if err != nil {
 		log.Println("ERROR extracting payload for verification:", err)
 	}
 
-	requestMessage = parseMattMessage(p.Interactions[0].Request.Contents.Content)
-	responseMessage = parseMattMessage(p.Interactions[0].Response[0].Contents.Content)
+	// Find the current interaction in the Pact
+	for _, inter := range p.Interactions {
+		log.Println("finding interaction by key", req.InteractionKey)
+		log.Println(inter)
+
+		switch i := inter.(type) {
+		case *httpInteraction:
+			log.Println("comparing keys", i.interaction.Key, req.InteractionKey)
+			if i.Key == req.InteractionKey {
+				log.Println("found HTTP interaction")
+				requestMessage = parseMattMessage(i.Request.Body.Content)
+				responseMessage = parseMattMessage(i.Response.Body.Content)
+			}
+		case *asyncMessageInteraction:
+			log.Println("comparing keys", i.interaction.Key, req.InteractionKey)
+			if i.Key == req.InteractionKey {
+				log.Println("found async interaction")
+				requestMessage = parseMattMessage(i.Contents.Content)
+			}
+		case *syncMessageInteraction:
+			log.Println("comparing keys", i.interaction.Key, req.InteractionKey)
+			if i.Key == req.InteractionKey {
+				log.Println("found sync interaction")
+				requestMessage = parseMattMessage(i.Request.Contents.Content)
+				responseMessage = parseMattMessage(i.Response[0].Contents.Content)
+			}
+		default:
+			log.Printf("unknown interaction type: '%+v'", i)
+		}
+	}
+	log.Println("found request body:", requestMessage)
+	log.Println("found response body:", responseMessage)
 
 	return &plugin.VerificationPreparationResponse{
 		Response: &plugin.VerificationPreparationResponse_InteractionData{
