@@ -35,8 +35,8 @@ proto:
 
 install_local: bin 
 	@echo "Creating a local phony plugin install so we can test locally"
-	mkdir -p ~/.pact/plugins/$(NAME)-0.0.1
-	cp ./build/$(NAME) ~/.pact/plugins/$(NAME)-0.0.1/
-	cp pact-plugin.json ~/.pact/plugins/$(NAME)-0.0.1/
+	mkdir -p ~/.pact/plugins/$(NAME)-0.0.3
+	cp ./build/$(NAME) ~/.pact/plugins/$(NAME)-0.0.3/
+	cp pact-plugin.json ~/.pact/plugins/$(NAME)-0.0.3/
 
 .PHONY: install bin test clean release
