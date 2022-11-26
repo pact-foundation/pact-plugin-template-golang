@@ -1,7 +1,7 @@
 {
   "pluginInterfaceVersion": 1,
   "name": "matt",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "executableType": "exec",
   "minimumRequiredVersion": null,
   "entryPoint": "matt",

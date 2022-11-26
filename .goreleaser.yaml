@@ -22,7 +22,7 @@ archives:
       windows: windows
       amd64: x86_64
       arm64: aarch64
-    name_template: "{{ .ProjectName }}-{{ .Os }}-{{ .Arch }}"
+    name_template: "{{ .ProjectName }}-{{ .Os }}-{{ .Arch }}{{ .ArtifactExt }}"
     format: gz
     files:
       - none*
