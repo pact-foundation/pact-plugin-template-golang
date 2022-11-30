@@ -49,6 +49,15 @@ Similarly, correct the import at the top of [`plugin.go`](./plugin.go) and [`ser
 
 Or simply do a workspace wide search and replace from `github.com/pact-foundation/pact-plugin-template-golang` to your go module name.
 
+Run:
+
+```
+go mod tidy
+go mod vendor
+```
+
+To ensure the dependencies and vendoring are correct.
+
 ### Set the name and version
 
 In the top of the [`Makefile`](./Makefile) set `PROJECT` to your plugin's name.
