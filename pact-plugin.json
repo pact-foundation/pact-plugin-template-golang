@@ -1,10 +1,10 @@
 {
   "pluginInterfaceVersion": 1,
-  "name": "foobar",
-  "version": "1.2.3",
+  "name": "myplugin",
+  "version": "0.0.1",
   "executableType": "exec",
   "minimumRequiredVersion": null,
-  "entryPoint": "foobar",
+  "entryPoint": "myplugin",
   "entryPoints": {},
   "dependencies": null,
   "pluginConfig": {}

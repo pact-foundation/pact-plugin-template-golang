@@ -2,6 +2,10 @@
 
 ## Tag and push a new release
 
+Update `VERSION` in [`Makefile`](./Makefile)
+
+Tag the version and push:
+
 ```
 git tag -a v0.0.1 -m "Initial release"
 git push origin v0.0.1

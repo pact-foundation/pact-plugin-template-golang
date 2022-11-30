@@ -1,12 +1,14 @@
 TEST?=./...
 .DEFAULT_GOAL := ci
 FFI_VERSION=0.3.15
-VERSION?=0.0.1      # Update this version
-PROJECT?=myplugin   # Update to your project name
+# Update this version
+VERSION=0.0.1
+# Update to your project name
+PROJECT=myplugin
 
 ci:: deps clean bin test
 
-bin:
+bin: write_config
 	go build -o build/$(PROJECT)
 
 clean:
