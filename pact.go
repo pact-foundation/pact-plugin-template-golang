@@ -49,7 +49,6 @@ func (p *pactv4) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-// TODO: specific sub types below
 type interaction struct {
 	Type string
 	Key  string
@@ -85,6 +84,7 @@ type httpResponse struct {
 }
 
 // NOTE: only mapping parts of the spec required. Excluding headers, query etc.
+//       If you need additional fields please update and submit a PR
 type httpRequest struct {
 	Body bodyContent
 }

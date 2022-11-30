@@ -1,15 +1,16 @@
 TEST?=./...
-NAME?=matt
 .DEFAULT_GOAL := ci
-PACT_CLI="docker run --rm -v ${PWD}:${PWD} -e PACT_BROKER_BASE_URL=$(DOCKER_HOST_HTTP) -e PACT_BROKER_USERNAME -e PACT_BROKER_PASSWORD pactfoundation/pact-cli"
+FFI_VERSION=0.3.15
+VERSION?=0.0.1      # Update this version
+PROJECT?=myplugin   # Update to your project name
 
 ci:: deps clean bin test
 
 bin:
-	go build -o build/$(NAME)
+	go build -o build/$(PROJECT)
 
 clean:
-	rm -rf build
+	rm -rf build dist
 
 deps:
 	@echo "--- 🐿  Fetching build dependencies "
@@ -18,25 +19,25 @@ deps:
 	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2 ;\
 	cd -
 
-release:
-	echo "--- 🚀 Releasing it"
-	"$(CURDIR)/scripts/release.sh"
-
-test: deps install
+test: deps
 	go test $(TEST)
-
-testrace:
-	go test -race $(TEST) $(TESTARGS)
 
 proto:
 	@protoc --go_out=. --go_opt=paths=source_relative \
 		--go-grpc_out=. --go-grpc_opt=paths=source_relative \
 		io_pact_plugin/pact_plugin.proto
 
-install_local: bin 
+install_local: bin write_config
 	@echo "Creating a local phony plugin install so we can test locally"
-	mkdir -p ~/.pact/plugins/$(NAME)-0.0.4
-	cp ./build/$(NAME) ~/.pact/plugins/$(NAME)-0.0.4/
-	cp pact-plugin.json ~/.pact/plugins/$(NAME)-0.0.4/
+	mkdir -p ~/.pact/plugins/$(PROJECT)-$(VERSION)
+	cp ./build/$(PROJECT) ~/.pact/plugins/$(PROJECT)-$(VERSION)/
+	cp pact-plugin.json ~/.pact/plugins/$(PROJECT)-$(VERSION)/
 
-.PHONY: install bin test clean release
+write_config:
+	@cat pact-plugin.json | jq '.version = "'$(VERSION)'" | .name = "'$(PROJECT)'"' | tee pact-plugin.json
+
+ffi:
+	FFI_VERSION=$(FFI_VERSION) ./scripts/download-libs.sh
+
+.PHONY: bin test clean write_config
+

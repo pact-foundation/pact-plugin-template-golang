@@ -6,6 +6,9 @@ import (
 	"github.com/google/uuid"
 )
 
+// This file contains the plugin entrypoint
+// You probably don't need to change this
+
 func main() {
 	initLogging()
 
@@ -15,7 +18,6 @@ func main() {
 	}
 
 	// Start the Plugin Server
-	// TODO: proper handling of startup/shutdown
 	startPluginServer(serverDetails{
 		Port:      port,
 		ServerKey: uuid.NewString(),

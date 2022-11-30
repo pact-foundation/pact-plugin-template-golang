@@ -1,18 +1,98 @@
-# Pact Plugin Example - The MATT protocol
+# Pact Plugin Template
 
-This is an example [plugin](https://github.com/pact-foundation/pact-plugins) for the [Pact](http://docs.pact.io) framework.
+Template project to help bootstrap a new Pact [Plugin](https://github.com/pact-foundation/pact-plugins) for the [Pact](http://docs.pact.io) framework. 
 
-It implements a custom [Protocol](https://github.com/pact-foundation/pact-plugins/blob/main/docs/protocol-plugin-design.md) and [Content Matcher](https://github.com/pact-foundation/pact-plugins/blob/main/docs/content-matcher-design.md) for a fictional protocol - the MATT protocol.
+**Features:**
 
-## Install
+* Stubbed gRPC methods ready to implement
+* Automated release procedure
+* Support for recommended common platform/targets
+* Levelled logging for observability
+
+**TODO**
+
+- [ ] Support Matchers and Generators (requires FFI package support)
+
+## Repository Structure
 
 ```
-pact-plugin-cli -y install https://github.com/mefellows/pact-matt-plugin/releases/tag/v0.0.1
+├── main.go           # Entrypoint for the application
+├── plugin.go         # Stub gRPC methods for you to implement (✅ fill me in!)
+├── configuration.go  # Type definitions for your plugin's DSL (✅ fill me in!)
+├── Makefile          # Build configuration                    (✅ fill me in!)
+├── io_pact_plugin/   # Location of protobuf and gRPC definitions for Plugin Framework
+├── log.go            # Logging utility
+├── pact-plugin.json  # Plugin configuration file
+├── pact.go           # Pact type definitions
+├── server.go         # The gRPC server implementation
+├── RELEASING.md      # Instructions on how to release 🚀
 ```
 
-## Writing tests
+## Developing the plugin
 
-### Synchronous Messages
+### Prerequsites
+
+The protoc compiler must be installed for this plugin 
+
+### Create your new repository
+
+1. Clone this repository 
+2. Create a new repository in GitHub. The name of the plugin should be `pact-<PROJECT>-plugin` e.g. `pact-protobuf-plugin`
+3. Push this code to your new repository
+
+### Set the name and version
+
+In the top of the [`Makefile`](./Makefile) set `PROJECT` to your plugin's name.
+
+`PROJECT` should map to `<PROJECT>` in your GitHub repository.
+
+### Design the consumer interface
+
+This is how the users of your plugin will write the plugin specific interaction details. 
+
+For example, take the following HTTP interaction:
+
+```js
+await pact
+  .addInteraction()
+  .given('the Matt protocol exists')
+  .uponReceiving('an HTTP request to /matt')
+  .usingPlugin({
+    plugin: 'matt',
+    version: '0.0.4',
+  })
+  .withRequest('POST', '/matt', (builder) => {
+    builder.pluginContents('application/matt', mattRequest); // <- request
+  })
+  .willRespondWith(200, (builder) => {
+    builder.pluginContents('application/matt', mattResponse); // <- response
+  })
+  .executeTest((mockserver) => {
+          ...
+```          
+
+The user needs to specify the request and response body portion of the request.
+
+Because the use cases for plugins are so wide and varied, the framework does not impose limits
+on this data structure and is something you need to design.
+
+This being said, most plugins have opted to use a JSON structure. 
+
+This structure should be represented in [`configuration.go`](./configuration.go)
+
+Think about how you would like your user to specify the interaction details for the various interaction types. 
+
+Here is an example for a TCP plugin with a custom text protocol:
+
+#### Synchronous Messages
+
+Set the expected response from the API:
+
+```
+mattMessage := `{"response": {"body": "hellotcp"}}`
+```
+
+#### Asynchronous Messages
 
 Set the request/response all in one go:
 
@@ -20,40 +100,53 @@ Set the request/response all in one go:
 mattMessage := `{"request": {"body": "hellotcp"}, "response":{"body":"tcpworld"}}`
 ```
 
-### HTTP
+#### HTTP
 
 Separate out the body on the request/response part of the interaction:
 
 ```
-	mattRequest := `{"request": {"body": "hello"}}`
-	mattResponse := `{"response":{"body":"world"}}`
+mattRequest := `{"request": {"body": "hello"}}`
+mattResponse := `{"response":{"body":"world"}}`
 ```
 
-## Use Case
+### Write the Plugin!
 
-The MATT protocol is a simple text-based protocol, designed for efficient communication of messages to a Matt.
+#### Implement the relevant RPC functions
 
-MATT messages are composed of basic text values, where the start and end of the communication must contain the word "MATT".
+Open [`plugin.go`](./plugin.go) and update the relevant RPC functions. 
 
-i.e.  `MATT<message>MATT`
+Depending on your use case, some of the RPC calls won't be required, each method is well signposted to help you along.
 
-in BNF it would be something like this:
+#### Logging
+
+You should log regularly. Debugging gRPC calls from the framework can be challenging, as the plugin is started asynchronously by the Plugin Driver behind the scenes.
+
+There are two ways to log:
+
+1. Stdout - all stdout (e.g. `fmt.Print*`) is pulled into the general Pact logs for the framework you're running
+2. To file. All calls to `log.Print*` will be written to file
+
+The log setup has three main features:
+
+1. It works with the native Go `log` package
+2. It logs to a file relative to plugin execution in `log/plugin.log`
+3. It is levelled, at the direction of the plugin driver (that is, the log level will pass in from the driver which will restrict the levels logged in this plugin)
+
+To write something to the log file, you simply use the `log` package, with the level prefixed as per below:
 
 ```
-<message>   ::= <delimeter> <word> <delimeter>
-<delimeter> ::= "MATT"
-<word>      ::= <character> | <word> <character>
-<character> ::= <letter> | <number> | <symbol>
-<letter>    ::= "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z" | "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z"
-<number>    ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
-<symbol>    ::=  "|" | " " | "!" | "#" | "$" | "%" | "&" | "(" | ")" | "*" | "+" | "," | "-" | "." | "/" | ":" | ";" | ">" | "=" | "<" | "?" | "@" | "[" | "\" | "]" | "^" | "_" | "`" | "{" | "}" | "~"
+	log.Println("[TRACE] ...")
+	log.Println("[DEBUG] ...")
+	log.Println("[INFO] ...")
+	log.Println("[WARN] ...")
+	log.Println("[ERROR] ...")
 ```
 
-When sent over TCP, messages are terminated with the newline delimeter `\n`.
+### Publish your plugin
 
-## Developing the plugin
+Follow the steps in [Releasing](./RELEASING.md) to publish a new version of your Plugin. 
 
-### Build and install the plugin 
+## Local Development
 
 The following command will build the plugin, and install into the correct plugin directory for local development:
 
@@ -61,15 +154,27 @@ The following command will build the plugin, and install into the correct plugin
 make install_local
 ```
 
+You can then reference your plugin in local tests to try it out.
 
 ### Regenerating the plugin protobuf definitions
 
-If a new protobuf definition is required, copy into the `io_pact_plugin` folder and run the following Make task:
+If a new protobuf definition is required (e.g. to support a new feature), copy into the `io_pact_plugin` folder and run the following Make task:
 
 ```
 make proto
 ```
 
-### Prerequsites
+It will update the definitions in the `io_pact_plugin` package. Note this may result in a breaking change, depending on the version. So upgrade carefully.
 
-The protoc compiler must be installed for this plugin 
+## Supported targets
+
+This code base should automatically create artifacts for the following OS/Architecture combiations:
+
+| OS      | Architecture | Supported |
+| ------- | ------------ | --------- |
+| OSX     | x86_64       | ✅         |
+| OSX     | arm          | ✅         |
+| Linux   | x86_64       | ✅         |
+| Linux   | arm          | ✅         |
+| Windows | x86_64       | ✅         |
+| Windows | arm          | ✅         |
