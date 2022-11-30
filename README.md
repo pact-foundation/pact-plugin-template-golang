@@ -99,7 +99,7 @@ Here is an example for a TCP plugin with a custom text protocol:
 
 Set the expected response from the API:
 
-```
+```go
 mattMessage := `{"response": {"body": "hellotcp"}}`
 ```
 
@@ -107,7 +107,7 @@ mattMessage := `{"response": {"body": "hellotcp"}}`
 
 Set the request/response all in one go:
 
-```
+```go
 mattMessage := `{"request": {"body": "hellotcp"}, "response":{"body":"tcpworld"}}`
 ```
 
@@ -115,7 +115,7 @@ mattMessage := `{"request": {"body": "hellotcp"}, "response":{"body":"tcpworld"}
 
 Separate out the body on the request/response part of the interaction:
 
-```
+```go
 mattRequest := `{"request": {"body": "hello"}}`
 mattResponse := `{"response":{"body":"world"}}`
 ```
@@ -145,12 +145,12 @@ The log setup has three main features:
 
 To write something to the log file, you simply use the `log` package, with the level prefixed as per below:
 
-```
-	log.Println("[TRACE] ...")
-	log.Println("[DEBUG] ...")
-	log.Println("[INFO] ...")
-	log.Println("[WARN] ...")
-	log.Println("[ERROR] ...")
+```golang
+log.Println("[TRACE] ...")
+log.Println("[DEBUG] ...")
+log.Println("[INFO] ...")
+log.Println("[WARN] ...")
+log.Println("[ERROR] ...")
 ```
 
 ### Publish your plugin
