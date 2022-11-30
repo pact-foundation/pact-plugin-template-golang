@@ -34,7 +34,9 @@ install_local: bin write_config
 	cp pact-plugin.json ~/.pact/plugins/$(PROJECT)-$(VERSION)/
 
 write_config:
-	@cat pact-plugin.json | jq '.version = "'$(VERSION)'" | .name = "'$(PROJECT)'"' | tee pact-plugin.json
+	@cp pact-plugin.json pact-plugin.json.new
+	@cat pact-plugin.json | jq '.version = "'$(VERSION)'" | .name = "'$(PROJECT)'" | .entryPoint = "'$(PROJECT)'"' | tee pact-plugin.json.new
+	@mv pact-plugin.json.new pact-plugin.json 
 
 ffi:
 	FFI_VERSION=$(FFI_VERSION) ./scripts/download-libs.sh

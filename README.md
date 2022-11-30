@@ -16,6 +16,7 @@ Template project to help bootstrap a new Pact [Plugin](https://github.com/pact-f
 ## Repository Structure
 
 ```
+├── go.mod            # Go module                              (✅ fill me in!)
 ├── main.go           # Entrypoint for the application
 ├── plugin.go         # Stub gRPC methods for you to implement (✅ fill me in!)
 ├── configuration.go  # Type definitions for your plugin's DSL (✅ fill me in!)
@@ -39,6 +40,10 @@ The protoc compiler must be installed for this plugin
 1. Clone this repository 
 2. Create a new repository in GitHub. The name of the plugin should be `pact-<PROJECT>-plugin` e.g. `pact-protobuf-plugin`
 3. Push this code to your new repository
+
+### Update the Go module name
+
+Replace `github.com/pact-foundation/pact-plugin-template` with your github URL to identify the package uniquely.
 
 ### Set the name and version
 

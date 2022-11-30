@@ -4,7 +4,7 @@
   "version": "1.2.3",
   "executableType": "exec",
   "minimumRequiredVersion": null,
-  "entryPoint": "matt",
+  "entryPoint": "foobar",
   "entryPoints": {},
   "dependencies": null,
   "pluginConfig": {}

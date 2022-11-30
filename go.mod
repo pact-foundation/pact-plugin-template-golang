@@ -1,4 +1,4 @@
-module github.com/mefellows/pact-matt-plugin
+module github.com/pact-foundation/pact-plugin-template // TODO: change me!
 
 go 1.18
 

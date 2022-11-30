@@ -44,14 +44,14 @@ func (m *pluginServer) InitPlugin(ctx context.Context, req *plugin.InitPluginReq
 	return &plugin.InitPluginResponse{
 		Catalogue: []*plugin.CatalogueEntry{
 			{
-				Key:  "PROJECT NAME",
-				Type: plugin.CatalogueEntry_CONTENT_MATCHER,
+				Key:  "PROJECT NAME",                        // TODO: changeme!
+				Type: plugin.CatalogueEntry_CONTENT_MATCHER, // TODO: changeme!
 				Values: map[string]string{
 					"content-types": CONTENT_TYPE,
 				},
 			},
 			{
-				Key:  "TRANSPORT NAME",
+				Key:  "TRANSPORT NAME", // TODO: changeme!
 				Type: plugin.CatalogueEntry_TRANSPORT,
 			},
 		},
