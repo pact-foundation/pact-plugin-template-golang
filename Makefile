@@ -37,7 +37,7 @@ install_local: bin write_config
 
 write_config:
 	@cp pact-plugin.json pact-plugin.json.new
-	@cat pact-plugin.json | jq '.version = "'$(VERSION)'" | .name = "'$(PROJECT)'" | .entryPoint = "'$(PROJECT)'"' | tee pact-plugin.json.new
+	@cat pact-plugin.json | jq '.version = "'$(subst v,,$(VERSION))'" | .name = "'$(PROJECT)'" | .entryPoint = "'$(PROJECT)'"' | tee pact-plugin.json.new
 	@mv pact-plugin.json.new pact-plugin.json 
 
 ffi:
