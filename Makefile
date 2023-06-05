@@ -1,8 +1,8 @@
 TEST?=./...
 .DEFAULT_GOAL := ci
 FFI_VERSION=0.3.15
-# Update this version
-VERSION=0.0.1
+# Update this version. It will be sourced
+VERSION?=0.0.1
 # Update to your project name
 PROJECT=myplugin
 

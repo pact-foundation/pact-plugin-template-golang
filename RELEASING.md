@@ -2,8 +2,6 @@
 
 ## Tag and push a new release
 
-Update `VERSION` in [`Makefile`](./Makefile)
-
 Tag the version and push:
 
 ```

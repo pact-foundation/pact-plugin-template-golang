@@ -11,6 +11,9 @@ permissions:
   # packages: write
   # issues: write
 
+env:
+  VERSION: ${{ github.ref_name }}
+
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
